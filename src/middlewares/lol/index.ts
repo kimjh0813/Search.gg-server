@@ -15,15 +15,26 @@ const getGameVersion = async (req: Request, res: Response) => {
 };
 
 const getUserInfo = async (req: Request, res: Response) => {
-  const response = await apiRequest<any>({
+  const userInfoResponse = await apiRequest<any>({
     url: `https://kr.api.riotgames.com/lol/summoner/v4/summoners/by-name/${req.params.username}`,
     method: "get",
     headers: {
       "X-Riot-Token": apiKey,
     },
   });
+  const userTierResponse = await apiRequest<any>({
+    url: `https://kr.api.riotgames.com/lol/league/v4/entries/by-summoner/${userInfoResponse.data.id}`,
+    method: "get",
+    headers: {
+      "X-Riot-Token": apiKey,
+    },
+  });
 
-  res.send(response.data);
+  const response = [
+    { tier: userTierResponse.data, userInfo: userInfoResponse.data },
+  ];
+
+  res.send(response);
 };
 
 const Lol = {
