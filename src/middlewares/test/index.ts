@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 
-const maria = require("../../database/maria");
+import maria from "../../database/maria";
 
 const getTestTable = async (req: Request, res: Response) => {
   maria.query("select * from testTable", function (err: any, rows: any) {

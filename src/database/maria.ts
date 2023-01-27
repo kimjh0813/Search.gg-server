@@ -1,7 +1,4 @@
-require("dotenv").config();
-
 const maria = require("mysql");
-
 const conn = maria.createConnection({
   host: process.env.DB_HOST,
   port: process.env.DB_PORT,
@@ -10,4 +7,4 @@ const conn = maria.createConnection({
   database: process.env.DB_NAME,
 });
 
-module.exports = conn;
+export default conn;

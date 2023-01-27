@@ -1,7 +1,8 @@
+import express from "express";
 import Test from "../../middlewares/test";
 
-const Router = require("express").Router();
+const Router = express.Router();
 
 Router.route("/").get(Test.getTestTable);
 
-module.exports = Router;
+export default Router;

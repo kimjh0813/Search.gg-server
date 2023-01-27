@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
 import apiRequest from "../../utils/apiRequest";
 
-const maria = require("../../database/maria");
+import maria from "../../database/maria";
 
 const apiKey = process.env.RIOT_API_KEY;
 

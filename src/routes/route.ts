@@ -1,10 +1,10 @@
-// Require
-const Router = require("express").Router();
+import { Router } from "express";
+import Test from "./test/index";
+import Lol from "./lol/index";
 
-const Test = require("./test/index");
-const Lol = require("./lol/index");
+const useRouter = Router();
 
-Router.use("/test", Test);
-Router.use("/lol", Lol);
+useRouter.use("/test", Test);
+useRouter.use("/lol", Lol);
 
-module.exports = Router;
+export default useRouter;
