@@ -1,15 +1,13 @@
 import express, { Application } from "express";
-import useRouter from "./src/routes/route";
-import dotenv from "dotenv";
 
-dotenv.config();
+require("dotenv").config();
 
 const app: Application = express();
 
 const port: number = parseInt(process.env.SERVER_PORT as string) || 5000;
 
 app.listen(port, function () {
-  console.log(`App is listening on port ${port} ${process.env.SERVER_PORT} !`);
+  console.log(`App is listening on port ${port} !`);
 });
 
-app.use("/api", useRouter);
+app.use("/api", require("./src/routes/route"));

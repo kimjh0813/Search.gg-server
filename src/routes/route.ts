@@ -7,4 +7,4 @@ const useRouter = Router();
 useRouter.use("/test", Test);
 useRouter.use("/lol", Lol);
 
-export default useRouter;
+module.exports = useRouter;
