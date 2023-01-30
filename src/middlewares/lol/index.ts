@@ -63,10 +63,57 @@ const getUserTier = async (req: Request, res: Response) => {
   res.send(tierInfo);
 };
 
+const getUserGameRecord = async (req: Request, res: Response) => {
+  const { startTime, endTime, queue, type, start, count } = req.query;
+
+  const setQuery = () => {
+    let query: string = "";
+    if (startTime) {
+      query = query + "startTime=" + startTime + "&";
+    }
+    if (endTime) {
+      query = query + "endTime=" + endTime + "&";
+    }
+    if (queue) {
+      query = query + "queue=" + queue + "&";
+    }
+    if (type) {
+      query = query + "type=" + type + "&";
+    }
+    if (!start) {
+      query = query + "start=" + "1" + "&";
+    } else {
+      query = query + "start=" + start + "&";
+    }
+    if (!count) {
+      query = query + "start=" + "20";
+    } else {
+      query = query + "count=" + count;
+    }
+
+    return query;
+  };
+
+  console.log(setQuery());
+
+  const response = await apiRequest<any>({
+    url: `https://asia.api.riotgames.com/lol/match/v5/matches/by-puuid/${
+      req.params.puuid
+    }/ids?${setQuery()}`,
+    method: "get",
+    headers: {
+      "X-Riot-Token": apiKey,
+    },
+  });
+
+  res.send(response.data);
+};
+
 const Lol = {
   getGameVersion: [getGameVersion],
   getUserInfo: [getUserInfo],
   getUserTier: [getUserTier],
+  getUserGameRecord: [getUserGameRecord],
 };
 
 export default Lol;
