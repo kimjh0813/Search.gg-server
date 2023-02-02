@@ -1,4 +1,4 @@
-import axios from "axios";
+import axios, { AxiosResponse } from "axios";
 
 interface apiRequestProps {
   url: string;
@@ -14,7 +14,7 @@ const apiRequest = async <T = any>({
   headers,
   data,
   params,
-}: apiRequestProps): Promise<T> => {
+}: apiRequestProps): Promise<AxiosResponse<T, any>> => {
   return await axios({
     url,
     method,

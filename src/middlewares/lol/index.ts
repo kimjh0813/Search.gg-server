@@ -5,6 +5,16 @@ import maria from "../../database/maria";
 
 const apiKey = process.env.RIOT_API_KEY;
 
+interface UserInfo {
+  accountId: string;
+  id: string;
+  name: string;
+  profileIconId: number;
+  puuid: string;
+  revisionDate: number;
+  summonerLevel: number;
+}
+
 const getGameVersion = async (req: Request, res: Response) => {
   const response = await apiRequest<any>({
     url: "https://ddragon.leagueoflegends.com/api/versions.json",
@@ -15,13 +25,14 @@ const getGameVersion = async (req: Request, res: Response) => {
 };
 
 const getUserInfo = async (req: Request, res: Response) => {
-  const response = await apiRequest<any>({
+  const response = await apiRequest<UserInfo>({
     url: `https://kr.api.riotgames.com/lol/summoner/v4/summoners/by-name/${req.params.username}`,
     method: "get",
     headers: {
       "X-Riot-Token": apiKey,
     },
   });
+  console.log(response.data);
 
   res.send(response.data);
 };
