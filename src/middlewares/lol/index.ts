@@ -15,13 +15,29 @@ interface UserInfo {
   summonerLevel: number;
 }
 
+interface TierInfo {
+  leagueId?: string;
+  queueType: string;
+  tier: string;
+  rank?: string;
+  summonerId?: string;
+  summonerName?: string;
+  leaguePoints?: number;
+  wins?: number;
+  losses?: number;
+  veteran?: boolean;
+  inactive?: boolean;
+  freshBlood?: boolean;
+  hotStreak?: boolean;
+}
+
 const getGameVersion = async (req: Request, res: Response) => {
-  const response = await apiRequest<any>({
+  const response = await apiRequest<string[]>({
     url: "https://ddragon.leagueoflegends.com/api/versions.json",
     method: "get",
   });
 
-  res.send(response.data);
+  res.send(response.data[0]);
 };
 
 const getUserInfo = async (req: Request, res: Response) => {
@@ -38,7 +54,7 @@ const getUserInfo = async (req: Request, res: Response) => {
 };
 
 const getUserTier = async (req: Request, res: Response) => {
-  const response = await apiRequest<any>({
+  const response = await apiRequest<TierInfo[]>({
     url: `https://kr.api.riotgames.com/lol/league/v4/entries/by-summoner/${req.params.id}`,
     method: "get",
     headers: {
@@ -49,7 +65,7 @@ const getUserTier = async (req: Request, res: Response) => {
   let tierInfo = response.data;
 
   const rankValue = tierInfo.filter(
-    ({ queueType }: any) => queueType === "RANKED_SOLO_5x5" || "RANKED_FLEX_SR"
+    ({ queueType }) => queueType === "RANKED_SOLO_5x5" || "RANKED_FLEX_SR"
   );
 
   if (tierInfo.length === 0 || !rankValue) {
