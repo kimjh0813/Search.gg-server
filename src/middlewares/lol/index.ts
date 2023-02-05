@@ -113,17 +113,15 @@ const getUserGameRecord = async (req: Request, res: Response) => {
       query = query + "start=" + start + "&";
     }
     if (!count) {
-      query = query + "start=" + "20";
+      query = query + "count=" + "20" + "&";
     } else {
-      query = query + "count=" + count;
+      query = query + "count=" + count + "&";
     }
 
     return query;
   };
 
-  console.log(setQuery());
-
-  const response = await apiRequest<any>({
+  const response = await apiRequest<string[]>({
     url: `https://asia.api.riotgames.com/lol/match/v5/matches/by-puuid/${
       req.params.puuid
     }/ids?${setQuery()}`,
