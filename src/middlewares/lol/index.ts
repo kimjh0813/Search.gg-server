@@ -87,6 +87,10 @@ const getUserTier = async (req: Request, res: Response) => {
     );
   }
 
+  if (tierInfo[0].queueType === "RANKED_FLEX_SR") {
+    tierInfo = [tierInfo[1], tierInfo[0]];
+  }
+
   res.send(tierInfo);
 };
 
