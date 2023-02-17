@@ -1,16 +1,15 @@
+import maria from "../../database/maria";
 import { Request, Response } from "express";
 
-import maria from "../../database/maria";
-
 const getTestTable = async (req: Request, res: Response) => {
-  maria.query("select * from testTable", function (err: any, rows: any) {
-    if (!err) {
-      console.log("secc");
-      res.send(rows);
-    } else {
-      console.log("err: ", err);
-    }
-  });
+  // maria.query("select * from testTable", function (err: any, rows: any) {
+  //   if (!err) {
+  //     res.send(rows);
+  //   } else {
+  //     console.log("err: ", err);
+  //   }
+  // });
+  res.send("response");
 };
 
 const Test = {

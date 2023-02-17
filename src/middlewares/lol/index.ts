@@ -1,7 +1,6 @@
-import { Request, Response } from "express";
-import apiRequest from "../../utils/apiRequest";
-
 import maria from "../../database/maria";
+import apiRequest from "../../utils/apiRequest";
+import { Request, Response } from "express";
 
 const apiKey = process.env.RIOT_API_KEY;
 
@@ -16,24 +15,29 @@ interface UserInfo {
 }
 
 interface TierInfo {
-  leagueId?: string;
+  leagueId: string;
   queueType: string;
   tier: string;
-  rank?: string;
-  summonerId?: string;
-  summonerName?: string;
-  leaguePoints?: number;
-  wins?: number;
-  losses?: number;
-  veteran?: boolean;
-  inactive?: boolean;
-  freshBlood?: boolean;
-  hotStreak?: boolean;
+  rank: string;
+  summonerId: string;
+  summonerName: string;
+  leaguePoints: number;
+  wins: number;
+  losses: number;
+  veteran: boolean;
+  inactive: boolean;
+  freshBlood: boolean;
+  hotStreak: boolean;
+}
+
+interface TierNoData {
+  queueType: string;
+  tier: string;
 }
 
 const getGameVersion = async (req: Request, res: Response) => {
   const response = await apiRequest<string[]>({
-    url: "https://ddragon.leagueoflegends.com/api/versions.json",
+    url: "http://ddragon.leagueoflegends.com/api/versions.json",
     method: "get",
   });
 
@@ -48,7 +52,6 @@ const getUserInfo = async (req: Request, res: Response) => {
       "X-Riot-Token": apiKey,
     },
   });
-  console.log(response.data);
 
   res.send(response.data);
 };
@@ -62,7 +65,7 @@ const getUserTier = async (req: Request, res: Response) => {
     },
   });
 
-  let tierInfo = response.data;
+  let tierInfo: (TierNoData | TierInfo)[] = response.data;
 
   const rankValue = tierInfo.filter(
     ({ queueType }) => queueType === "RANKED_SOLO_5x5" || "RANKED_FLEX_SR"
@@ -70,8 +73,8 @@ const getUserTier = async (req: Request, res: Response) => {
 
   if (tierInfo.length === 0 || !rankValue) {
     tierInfo = [
-      { queueType: "RANKED_SOLO_5x5", tier: "unRanked" },
-      { queueType: "RANKED_FLEX_SR", tier: "unRanked" },
+      { queueType: "RANKED_SOLO_5x5", tier: "UnRanked" },
+      { queueType: "RANKED_FLEX_SR", tier: "UnRanked" },
     ];
 
     res.send(tierInfo);
@@ -82,7 +85,7 @@ const getUserTier = async (req: Request, res: Response) => {
       rankValue[0].queueType === "RANKED_SOLO_5x5"
         ? "RANKED_FLEX_SR"
         : "RANKED_SOLO_5x5";
-    tierInfo = [{ queueType: queueTypeText, tier: "unRanked" }].concat(
+    tierInfo = [{ queueType: queueTypeText, tier: "UnRanked" }].concat(
       rankValue
     );
   }
