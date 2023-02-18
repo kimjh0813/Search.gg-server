@@ -98,31 +98,21 @@ const getUserTier = async (req: Request, res: Response) => {
 };
 
 const getUserGameRecord = async (req: Request, res: Response) => {
-  const { startTime, endTime, queue, type, start, count } = req.query;
+  const queryType = ["startTime", "endTime", "queue", "type", "start", "count"];
 
   const setQuery = () => {
     let query: string = "";
-    if (startTime) {
-      query = query + "startTime=" + startTime + "&";
+
+    for (const [key, value] of Object.entries(req.query)) {
+      if (!queryType.includes(key)) continue;
+      query += `${key}=${value}&`;
     }
-    if (endTime) {
-      query = query + "endTime=" + endTime + "&";
+
+    if (!req.query.start) {
+      query += "start=1&";
     }
-    if (queue) {
-      query = query + "queue=" + queue + "&";
-    }
-    if (type) {
-      query = query + "type=" + type + "&";
-    }
-    if (!start) {
-      query = query + "start=" + "1" + "&";
-    } else {
-      query = query + "start=" + start + "&";
-    }
-    if (!count) {
-      query = query + "count=" + "20" + "&";
-    } else {
-      query = query + "count=" + count + "&";
+    if (!req.query.count) {
+      query += "count=20";
     }
 
     return query;

@@ -1,5 +1,5 @@
-import express from "express";
 import Lol from "../../middlewares/lol/index";
+import express from "express";
 
 const Router = express.Router();
 
