@@ -118,7 +118,7 @@ const getUserGameRecord = async (req: Request, res: Response) => {
     return query;
   };
 
-  const response = await apiRequest<string[]>({
+  const matchIdData = await apiRequest<string[]>({
     url: `https://asia.api.riotgames.com/lol/match/v5/matches/by-puuid/${
       req.params.puuid
     }/ids?${setQuery()}`,
@@ -128,7 +128,24 @@ const getUserGameRecord = async (req: Request, res: Response) => {
     },
   });
 
-  res.send(response.data);
+  const matchIdArr = matchIdData.data;
+
+  let response: any = [];
+
+  for (const value of matchIdArr) {
+    const data = await apiRequest<any>({
+      url: `https://asia.api.riotgames.com/lol/match/v5/matches/${value}`,
+      method: "get",
+      headers: {
+        "X-Riot-Token": apiKey,
+      },
+    });
+    if (!response) return;
+
+    response.push(data.data);
+  }
+
+  res.send(response);
 };
 
 const Lol = {
