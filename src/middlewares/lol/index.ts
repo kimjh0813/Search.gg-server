@@ -45,6 +45,10 @@ const getGameVersion = async (req: Request, res: Response) => {
 };
 
 const getUserInfo = async (req: Request, res: Response) => {
+  if (req.params.username.length > 2) {
+    res.send("존재하지 않는 유저입니다.");
+  }
+
   const response = await apiRequest<UserInfo>({
     url: `https://kr.api.riotgames.com/lol/summoner/v4/summoners/by-name/${req.params.username}`,
     method: "get",
