@@ -45,7 +45,8 @@ const getGameVersion = async (req: Request, res: Response) => {
 };
 
 const getUserInfo = async (req: Request, res: Response) => {
-  if (req.params.username.length > 2) {
+  if (req.params.username.length < 2) {
+    console.log(req.params.username.length);
     res.send("존재하지 않는 유저입니다.");
   }
 
