@@ -45,13 +45,21 @@ const getGameVersion = async (req: Request, res: Response) => {
 };
 
 const getUserInfo = async (req: Request, res: Response) => {
-  if (req.params.username.length < 2) {
-    console.log(req.params.username.length);
+  let userName = req.params.username;
+  if (userName.length < 2) {
     res.send("존재하지 않는 유저입니다.");
   }
 
+  if (userName.length === 2) {
+    const userNameArr = userName.split("");
+    if (userNameArr.includes(" ")) {
+      res.send("존재하지 않는 유저입니다.");
+    }
+    userName = `${userNameArr[0]} ${userNameArr[1]}`;
+  }
+
   const response = await apiRequest<UserInfo>({
-    url: `https://kr.api.riotgames.com/lol/summoner/v4/summoners/by-name/${req.params.username}`,
+    url: `https://kr.api.riotgames.com/lol/summoner/v4/summoners/by-name/${userName}`,
     method: "get",
     headers: {
       "X-Riot-Token": apiKey,
