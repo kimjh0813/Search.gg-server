@@ -57,16 +57,19 @@ const getUserInfo = async (req: Request, res: Response) => {
     }
     userName = `${userNameArr[0]} ${userNameArr[1]}`;
   }
+  try {
+    const response = await apiRequest<UserInfo>({
+      url: `https://kr.api.riotgames.com/lol/summoner/v4/summoners/by-name/${userName}`,
+      method: "get",
+      headers: {
+        "X-Riot-Token": apiKey,
+      },
+    });
 
-  const response = await apiRequest<UserInfo>({
-    url: `https://kr.api.riotgames.com/lol/summoner/v4/summoners/by-name/${userName}`,
-    method: "get",
-    headers: {
-      "X-Riot-Token": apiKey,
-    },
-  });
-
-  res.send(response.data);
+    res.send(response.data);
+  } catch (error: any) {
+    res.send(error);
+  }
 };
 
 const getUserTier = async (req: Request, res: Response) => {
