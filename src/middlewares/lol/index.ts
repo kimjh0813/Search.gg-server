@@ -36,12 +36,16 @@ interface TierNoData {
 }
 
 const getGameVersion = async (req: Request, res: Response) => {
-  const response = await apiRequest<string[]>({
-    url: "http://ddragon.leagueoflegends.com/api/versions.json",
-    method: "get",
-  });
+  try {
+    const response = await apiRequest<string[]>({
+      url: "http://ddragon.leagueoflegends.com/api/versions.json",
+      method: "get",
+    });
 
-  res.send(response.data[0]);
+    res.send(response.data[0]);
+  } catch (error: any) {
+    res.send(error);
+  }
 };
 
 const getUserInfo = async (req: Request, res: Response) => {
@@ -73,44 +77,48 @@ const getUserInfo = async (req: Request, res: Response) => {
 };
 
 const getUserTier = async (req: Request, res: Response) => {
-  const response = await apiRequest<TierInfo[]>({
-    url: `https://kr.api.riotgames.com/lol/league/v4/entries/by-summoner/${req.params.id}`,
-    method: "get",
-    headers: {
-      "X-Riot-Token": apiKey,
-    },
-  });
+  try {
+    const response = await apiRequest<TierInfo[]>({
+      url: `https://kr.api.riotgames.com/lol/league/v4/entries/by-summoner/${req.params.id}`,
+      method: "get",
+      headers: {
+        "X-Riot-Token": apiKey,
+      },
+    });
 
-  let tierInfo: (TierNoData | TierInfo)[] = response.data;
+    let tierInfo: (TierNoData | TierInfo)[] = response.data;
 
-  const rankValue = tierInfo.filter(
-    ({ queueType }) => queueType === "RANKED_SOLO_5x5" || "RANKED_FLEX_SR"
-  );
+    const rankValue = tierInfo.filter(
+      ({ queueType }) => queueType === "RANKED_SOLO_5x5" || "RANKED_FLEX_SR"
+    );
 
-  if (tierInfo.length === 0 || !rankValue) {
-    tierInfo = [
-      { queueType: "RANKED_SOLO_5x5", tier: "UnRanked" },
-      { queueType: "RANKED_FLEX_SR", tier: "UnRanked" },
-    ];
+    if (tierInfo.length === 0 || !rankValue) {
+      tierInfo = [
+        { queueType: "RANKED_SOLO_5x5", tier: "UnRanked" },
+        { queueType: "RANKED_FLEX_SR", tier: "UnRanked" },
+      ];
+
+      res.send(tierInfo);
+    }
+
+    if (rankValue.length === 1) {
+      const queueTypeText =
+        rankValue[0].queueType === "RANKED_SOLO_5x5"
+          ? "RANKED_FLEX_SR"
+          : "RANKED_SOLO_5x5";
+      tierInfo = [{ queueType: queueTypeText, tier: "UnRanked" }].concat(
+        rankValue
+      );
+    }
+
+    if (tierInfo[0].queueType === "RANKED_FLEX_SR") {
+      tierInfo = [tierInfo[1], tierInfo[0]];
+    }
 
     res.send(tierInfo);
+  } catch (error: any) {
+    res.send(error);
   }
-
-  if (rankValue.length === 1) {
-    const queueTypeText =
-      rankValue[0].queueType === "RANKED_SOLO_5x5"
-        ? "RANKED_FLEX_SR"
-        : "RANKED_SOLO_5x5";
-    tierInfo = [{ queueType: queueTypeText, tier: "UnRanked" }].concat(
-      rankValue
-    );
-  }
-
-  if (tierInfo[0].queueType === "RANKED_FLEX_SR") {
-    tierInfo = [tierInfo[1], tierInfo[0]];
-  }
-
-  res.send(tierInfo);
 };
 
 const getUserGameRecord = async (req: Request, res: Response) => {
